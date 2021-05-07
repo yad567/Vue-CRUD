@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        table{
+            border-collapse: collapse;
+        }
+        td,th{
+            border: 1px solid black;
+            padding: 10px;
+        }
+        input{
+            border: 1px solid grey;
+            padding: 4px;
+            border-radius: 6px;
+            margin: 5px;
+        }
+        button{
+            background-color: skyblue;
+            border-radius: 6px;
+            padding: 4px;
+            border: 1px solid white;
+        }
+        #edit{
+            background-color: yellow;
+            margin-right: 4px;
+            padding: 4px 15px;
+        }#delete{
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="countiner">
+    <input type="text" v-model="sname_update" placeholder="Name">
+    <input type="text" v-model="sage_update" placeholder="Age">
+    <input style="display: none;" type="text" v-model="sindex_update" placeholder="index">
+    <button v-on:click="update"> Update</button>
+    <div id="table">
+        <table style="border: 1px solid black;">
+            <tr> 
+                <th>check</th>
+                <th>#</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Opareations</th>
+            </tr>
+            <tr v-for="(student,index) in students" >
+                <td v-if=><input type="checkbox" v-model="checked" :value="index"></td>
+                <td>{{index+1}}</td>
+                <td>{{student.name}}</td>
+                <td>{{student.age}}</td>
+                <td>
+                    <button v-on:click="editStudent(index)" id="edit">Edit</button>
+                    <button  v-on:click="deleleStudent(index)" id="delete">Delete</button>
+                </td>
+            </tr>
+
+            <button @click="deleteChecked">Delete Checked Items</button>
+            <input type="checkbox" v-model="selectAll" @click="select()"> check all
+
+        </table>
+
+        <input type="text" v-model="sname_add" placeholder="Name">
+        <input type="text" v-model="sage_add" placeholder="Age">
+        <button v-on:click="addStudent">Add</button>
+
+    </div>
+    
+</div>
+
+
+    <script src="vue.global.js"></script>
+
+
+</body>
+</html>
+
+
+
+<script>
+
+    const app = {
+        data(){
+            return{
+                sname_update:"",
+                sage_update:"",
+                sindex_update:"",
+                students:[
+                    {name:"zedan",age:21},
+                    {name:"Ahmad",age:20},
+                    {name:"YAD",age:20},
+                    // {name:"Hawre",age:20},
+                    // {name:"chawjwan",age:20}
+
+                ],
+                checked: [],
+                selectAll: false
+            }
+        },
+        methods:{
+            deleteChecked(){
+
+                for(let i=0; i<this.checked.length; i++){
+                        this.students.splice(this.checked[i],1,{name:"",age: null});
+                }
+                this.students = this.students.filter((value)=> {
+                    return value.age != null;
+                });
+                this.checked.splice(0);
+            },
+
+            select() {
+            this.checked = [];
+            if (!this.selectAll) {
+                for (let i in this.students) {
+                    this.checked.push(i);
+                }
+                console.log(this.checked);
+            }
+        },
+            addStudent(){
+                this.students.push({name:this.sname_add,age:this.sage_add})
+                this.sname_add=""
+                this.sage_add=""
+            },
+            deleleStudent(index){
+                id= index;
+                console.log("mn la naw deltam");
+               this.students.splice(index,1);
+            },
+            editStudent(index){
+              this.sname_update = this.students[index].name;
+              this.sage_update = this.students[index].age;
+              this.sindex_update = index
+             console.log(index)
+
+            },
+            update(){
+                this.students[this.sindex_update].name = this.sname_update;
+                this.students[this.sindex_update].age = this.sage_update;
+                this.sname_update='';
+                this.sage_update="";
+            }
+        }
+    }
+    Vue.createApp(app).mount("#countiner")
+
+</script>
